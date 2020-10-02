@@ -1,0 +1,20 @@
+node {
+    def myFlutterContainer = docker.image('shadowstriker/flutter-docker')
+    myFlutterContainer.pull()
+
+    stage('prep') {
+        checkout scm
+    }
+
+    stage('test') {
+        myFlutterContainer.inside() {
+            sh 'flutter doctor'
+        }
+    }
+
+    stage('build') {
+        myFlutterContainer.inside() {
+            sh 'cd myapp && flutter build apk --split-per-abi'
+        }
+    }
+}
